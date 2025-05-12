@@ -67,12 +67,12 @@ from open_instruct.utils import (
     ArgumentParserPlus,
     clean_last_n_checkpoints,
     get_last_checkpoint_path,
-    get_wandb_tags,
+    # get_wandb_tags,
     is_beaker_job,
     launch_ai2_evals_on_weka,
     maybe_get_beaker_config,
     maybe_use_ai2_hf_entity,
-    maybe_use_ai2_wandb_entity,
+    # maybe_use_ai2_wandb_entity,
 )
 
 logger = get_logger(__name__)
@@ -329,10 +329,10 @@ class FlatArguments:
     # Experiment tracking
     with_tracking: bool = False
     """If toggled, this experiment will be tracked with Weights and Biases"""
-    wandb_project_name: str = "open_instruct_internal"
-    """The wandb's project name"""
-    wandb_entity: Optional[str] = None
-    """The entity (team) of wandb's project"""
+    # wandb_project_name: str = "open_instruct_internal"
+    # """The wandb's project name"""
+    # wandb_entity: Optional[str] = None
+    # """The entity (team) of wandb's project"""
     push_to_hub: bool = True
     """Whether to upload the saved model to huggingface"""
     hf_entity: Optional[str] = None
@@ -438,24 +438,24 @@ def main(args: FlatArguments, tc: TokenizerConfig):
         # TensorBoard cannot log Enums, need the raw value
         experiment_config["lr_scheduler_type"] = experiment_config["lr_scheduler_type"]
 
-        # (Optional) Ai2 internal tracking
-        if args.wandb_entity is None:
-            args.wandb_entity = maybe_use_ai2_wandb_entity()
+        # # (Optional) Ai2 internal tracking
+        # if args.wandb_entity is None:
+        #     args.wandb_entity = maybe_use_ai2_wandb_entity()
         if accelerator.is_main_process and is_beaker_job():
             experiment_config.update(vars(beaker_config))
         experiment_config.update(vars(tc))
         accelerator.init_trackers(
             args.wandb_project_name,
             experiment_config,
-            init_kwargs={
-                "wandb": {
-                    "name": args.run_name,
-                    "entity": args.wandb_entity,
-                    "tags": [args.exp_name] + get_wandb_tags(),
-                }
-            },
+            # init_kwargs={
+            #     "wandb": {
+            #         "name": args.run_name,
+            #         "entity": args.wandb_entity,
+            #         "tags": [args.exp_name] + get_wandb_tags(),
+            #     }
+            # },
         )
-        wandb_tracker = accelerator.get_tracker("wandb")
+        # wandb_tracker = accelerator.get_tracker("wandb")
 
     if accelerator.is_main_process:
         pprint([args, tc])
@@ -913,7 +913,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
             path=args.output_dir,
             leaderboard_name=args.hf_repo_revision,
             oe_eval_max_length=args.oe_eval_max_length,
-            wandb_url=wandb_tracker.run.get_url(),
+            # wandb_url=wandb_tracker.run.get_url(),
             oe_eval_tasks=args.oe_eval_tasks,
             gs_bucket_path=args.gs_bucket_path,
         )
