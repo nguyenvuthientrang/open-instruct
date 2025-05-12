@@ -329,10 +329,10 @@ class FlatArguments:
     # Experiment tracking
     with_tracking: bool = False
     """If toggled, this experiment will be tracked with Weights and Biases"""
-    # wandb_project_name: str = "open_instruct_internal"
-    # """The wandb's project name"""
-    # wandb_entity: Optional[str] = None
-    # """The entity (team) of wandb's project"""
+    wandb_project_name: str = "open_instruct_internal"
+    """The wandb's project name"""
+    wandb_entity: Optional[str] = None
+    """The entity (team) of wandb's project"""
     push_to_hub: bool = True
     """Whether to upload the saved model to huggingface"""
     hf_entity: Optional[str] = None
@@ -444,9 +444,9 @@ def main(args: FlatArguments, tc: TokenizerConfig):
         if accelerator.is_main_process and is_beaker_job():
             experiment_config.update(vars(beaker_config))
         experiment_config.update(vars(tc))
-        accelerator.init_trackers(
-            args.wandb_project_name,
-            experiment_config,
+        # accelerator.init_trackers(
+            # args.wandb_project_name,
+            # experiment_config,
             # init_kwargs={
             #     "wandb": {
             #         "name": args.run_name,
@@ -454,7 +454,7 @@ def main(args: FlatArguments, tc: TokenizerConfig):
             #         "tags": [args.exp_name] + get_wandb_tags(),
             #     }
             # },
-        )
+        # )
         # wandb_tracker = accelerator.get_tracker("wandb")
 
     if accelerator.is_main_process:
